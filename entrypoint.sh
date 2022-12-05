@@ -105,7 +105,7 @@ if [[ $arch = "arm64" ]]; then
 
         ver_number="${ver/\/binutils}"
 
-        url="https://github.com/RasyidKautsar/azure-clang/${ver_number}.tar.gz"
+        url="https://gitlab.com/Panchajanya1999/azure-clang/-/archive/main/azure-clang-main.tar.gz"
 
         binutils="$([[ $ver = */binutils ]] && echo true || echo false)"
 
