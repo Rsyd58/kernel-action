@@ -103,9 +103,7 @@ if [[ $arch = "arm64" ]]; then
 
         ver="${compiler/azure-clang\/}"
 
-        ver_number="${ver/\/binutils}"
-
-        url="https://gitlab.com/Panchajanya1999/azure-clang/-/archive/main/azure-clang-"${ver_number}".tar.gz"
+        url="https://gitlab.com/Panchajanya1999/azure-clang/-/archive/main/azure-clang-main.tar.gz"
 
         binutils="$([[ $ver = */binutils ]] && echo true || echo false)"
 
@@ -115,7 +113,7 @@ if [[ $arch = "arm64" ]]; then
 
         echo "Downloading $url"
 
-        if ! wget --no-check-certificate "$url" -O /tmp/azure-clang-azure-clang-"${ver_number}".tar.gz &>/dev/null; then
+        if ! wget --no-check-certificate "$url" -O /tmp/azure-clang-main.tar.gz &>/dev/null; then
 
             err "Failed downloading toolchain, refer to the README for details"
 
@@ -141,9 +139,9 @@ if [[ $arch = "arm64" ]]; then
 
         apt install -y --no-install-recommends libgcc-10-dev || exit 127
 
-        extract_tarball /tmp/azure-clang-azure-clang-"${ver_number}".tar.gz /
+        extract_tarball /tmp/azure-clang-main.tar.gz /
 
-        cd /azure-clang-azure-clang-"${ver_number}"* || exit 127
+        cd /azure-clang-main* || exit 127
 
         azure_path="$(pwd)"
 
