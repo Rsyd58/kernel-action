@@ -265,9 +265,9 @@ if [[ $arch = "arm64" ]]; then
             make_opts="CC=clang"
             host_make_opts="HOSTCC=clang HOSTCXX=clang++"
         else
-            make_opts="CC=clang LD=ld.lld NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy"
+            make_opts="CC=clang NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy"
             make_opts+=" OBJDUMP=llvm-objdump READELF=llvm-readelf LLVM_IAS=1"
-            host_make_opts="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld HOSTAR=llvm-ar"
+            host_make_opts="HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar"
         fi
 
         apt install -y --no-install-recommends libgcc-10-dev || exit 127
