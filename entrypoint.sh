@@ -40,6 +40,37 @@ apt install -y --no-install-recommends git make bc bison openssl \
     device-tree-compiler ca-certificates python3 python2
 ln -sf "/usr/bin/python${python_version}" /usr/bin/python
 set_output hash "$(cd "$kernel_path" && git rev-parse HEAD || exit 127)"
+workdir="$GITHUB_WORKSPACE"
+msg "Downloading patchelf binary from ArchLinux repos"
+cd "$GITHUB_WORKSPACE" || exit
+mkdir -p patchelf-temp
+#curl -L https://github.com/Jebaitedneko/docker/raw/ubuntu/patchelf
+curl -L https://archlinux.org/packages/community/x86_64/patchelf/download | bsdtar -C patchelf-temp -xf -
+mv "$GITHUB_WORKSPACE"/patchelf-temp/usr/bin/patchelf "$GITHUB_WORKSPACE"/
+rm -rf "$GITHUB_WORKSPACE"/patchelf-temp
+msg "Downloading latest glibc from ArchLinux repos"
+mkdir -p glibc
+curl -L https://archlinux.org/packages/core/x86_64/glibc/download | bsdtar -C glibc -xf -
+curl -L https://archlinux.org/packages/core/x86_64/lib32-glibc/download | bsdtar -C glibc -xf -
+ln -svf "$GITHUB_WORKSPACE"/glibc/usr/lib "$GITHUB_WORKSPACE"/glibc/usr/lib64
+
+echo "Patching glibc"
+for bin in $(find ""$GITHUB_WORKSPACE""/glibc -type f -exec file {} \; | grep 'ELF .* interpreter' | awk '{print $1}'); do
+    bin="${bin::-1}"
+    echo "Patching: $bin"
+    "$GITHUB_WORKSPACE"/patchelf --set-rpath "$GITHUB_WORKSPACE"/glibc/usr/lib --force-rpath --set-interpreter "$GITHUB_WORKSPACE"/glibc/usr/lib/ld-linux-x86-64.so.2 "$bin"
+done
+
+echo "Patching Toolchain"
+for bin in $(find "$workdir" -type f -exec file {} \; | grep 'ELF .* interpreter' | awk '{print $1}'); do
+    bin="${bin::-1}"
+    echo "Patching: $bin"
+    "$GITHUB_WORKSPACE"/patchelf --add-rpath "$GITHUB_WORKSPACE"/glibc/usr/lib --force-rpath --set-interpreter "$GITHUB_WORKSPACE"/glibc/usr/lib/ld-linux-x86-64.so.2 "$bin"
+done
+
+echo "Cleaning"
+rm -rf "$GITHUB_WORKSPACE"/patchelf
+
 msg "Installing toolchain..."
 if [[ $arch = "arm64" ]]; then
     arch_opts="ARCH=${arch} SUBARCH=${arch}"
@@ -143,11 +174,11 @@ if [[ $arch = "arm64" ]]; then
 
         cd /neutron-clang-Neutron-16* || exit 127
 
-        azure_path="$(pwd)"
+        neutron_path="$(pwd)"
 
         cd "$workdir"/"$kernel_path" || exit 127
 
-        export PATH="$azure_path/bin:${PATH}"
+        export PATH="$neutron_path/bin:${PATH}"
 
         export CLANG_TRIPLE="aarch64-linux-gnu-"
 
