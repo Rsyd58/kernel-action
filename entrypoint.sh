@@ -99,11 +99,11 @@ if [[ $arch = "arm64" ]]; then
         export CLANG_TRIPLE="aarch64-linux-gnu-"
         export CROSS_COMPILE="aarch64-linux-gnu-"
         export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
-    elif [[ $compiler = azure-clang/* ]]; then
+    elif [[ $compiler = neutron-clang/* ]]; then
 
-        ver="${compiler/azure-clang\/}"
+        ver="${compiler/neutron-clang\/}"
 
-        url="https://gitlab.com/Panchajanya1999/azure-clang/-/archive/main/azure-clang-main.tar.gz"
+        url="https://gitlab.gnome.org/dakkshesh07/neutron-clang/-/archive/Neutron-16/neutron-clang-Neutron-16.tar.gz"
 
         binutils="$([[ $ver = */binutils ]] && echo true || echo false)"
 
@@ -113,7 +113,7 @@ if [[ $arch = "arm64" ]]; then
 
         echo "Downloading $url"
 
-        if ! wget --no-check-certificate "$url" -O /tmp/azure-clang-main.tar.gz &>/dev/null; then
+        if ! wget --no-check-certificate "$url" -O /tmp/neutron-clang-Neutron-16.tar.gz &>/dev/null; then
 
             err "Failed downloading toolchain, refer to the README for details"
 
@@ -131,7 +131,7 @@ if [[ $arch = "arm64" ]]; then
 
             make_opts="CC=clang LD=ld.lld NM=llvm-nm AR=llvm-ar STRIP=llvm-strip OBJCOPY=llvm-objcopy"
 
-            make_opts+="READELF=llvm-readelf LLVM_IAS=1"
+            make_opts="READELF=llvm-readelf LLVM_IAS=1 LLVM=1"
 
             host_make_opts="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld HOSTAR=llvm-ar"
 
@@ -139,9 +139,9 @@ if [[ $arch = "arm64" ]]; then
 
         apt install -y --no-install-recommends libgcc-10-dev || exit 127
 
-        extract_tarball /tmp/azure-clang-main.tar.gz /
+        extract_tarball /tmp/neutron-clang-Neutron-16.tar.gz /
 
-        cd /azure-clang-main* || exit 127
+        cd /neutron-clang-Neutron-16* || exit 127
 
         azure_path="$(pwd)"
 
