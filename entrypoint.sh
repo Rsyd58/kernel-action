@@ -41,7 +41,7 @@ apt install -y --no-install-recommends git make bc bison openssl \
 ln -sf "/usr/bin/python${python_version}" /usr/bin/python
 set_output hash "$(cd "$kernel_path" && git rev-parse HEAD || exit 127)"
 apt-get update
-apt-get install bsdtar
+apt-get install bsdtar|libarchive-tools
 workdir=$(pwd)
 msg "Downloading patchelf binary from ArchLinux repos"
 cd "$HOME" || exit
