@@ -55,7 +55,7 @@ curl -L https://archlinux.org/packages/core/x86_64/lib32-glibc/download | bsdtar
 ln -svf "$GITHUB_WORKSPACE"/glibc/usr/lib "$GITHUB_WORKSPACE"/glibc/usr/lib64
 
 echo "Patching glibc"
-for bin in $(find ""$GITHUB_WORKSPACE""/glibc -type f -exec file {} \; | grep 'ELF .* interpreter' | awk '{print $1}'); do
+for bin in $(find "$GITHUB_WORKSPACE"/glibc -type f -exec file {} \; | grep 'ELF .* interpreter' | awk '{print $1}'); do
     bin="${bin::-1}"
     echo "Patching: $bin"
     "$GITHUB_WORKSPACE"/patchelf --set-rpath "$GITHUB_WORKSPACE"/glibc/usr/lib --force-rpath --set-interpreter "$GITHUB_WORKSPACE"/glibc/usr/lib/ld-linux-x86-64.so.2 "$bin"
