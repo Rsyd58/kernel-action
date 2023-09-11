@@ -268,7 +268,7 @@ if [[ $arch = "arm64" ]]; then
             host_make_opts="HOSTCC=clang HOSTCXX=clang++"
         else
             make_opts="CC=clang NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy"
-            make_opts+=" OBJDUMP=llvm-objdump READELF=llvm-readelf LLVM_IAS=1"
+            make_opts=" OBJDUMP=llvm-objdump READELF=llvm-readelf LLVM_IAS=1"
             host_make_opts="HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar"
         fi
 
